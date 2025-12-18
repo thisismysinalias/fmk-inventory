@@ -171,13 +171,23 @@ function getImageConfiguration(franchise, options = {}) {
   } else if (franchise === 'inventory') {
     imageFolder = 'inventory';
 
-    const inventoryCount = 14; // adjust if needed
-    imageList = [];
-
-    for (let i = 1; i <= inventoryCount; i++) {
-      imageList.push(`image (${i}).webp`);
-    }
-
+    imageList = [
+"Cagliostro (Alias).webp",
+"Elaina (Alias).webp",
+"Goldmary (Alias).webp",
+"Hijiyama (Alias).webp",
+"Iori (Alias).webp",
+"Juliette (Alias).webp",
+"Kanna (Alias).webp",
+"Marice (Alias).webp",
+"Mina (Alias).webp",
+"Mizuki (Alias).webp",
+"Riesbyfe (Citru).webp",
+"Rise (Alias).webp",
+"Suletta (Alias).webp",
+"Teru (Alias).webp",
+"Whislash (Alias).webp",
+    ];
   } else {
     // Fire Emblem
     imageFolder = 'fe';
@@ -253,14 +263,23 @@ function getImageConfiguration(franchise, options = {}) {
 
       const trio = pulls[currentPullIndex];
       trio.forEach(filename => {
-        const card = document.createElement("div");
-        card.classList.add("image-card");
+      const card = document.createElement("div");
+      card.classList.add("image-card");
 
-        // <img src="images/[folder]/filename">
-        const img = document.createElement("img");
-        img.src = `images/${imageFolder}/${filename}`;
-        img.alt = filename;
-        card.appendChild(img);
+      // Label container
+      const title = document.createElement("div");
+      title.classList.add("image-title");
+
+      // Show filename without extension if you want cleaner look:
+      const cleanName = filename.replace(/\.(png|webp)$/i, "");
+      title.textContent = cleanName;
+      card.appendChild(title);
+
+      // Image itself
+      const img = document.createElement("img");
+      img.src = `images/${imageFolder}/${filename}`;
+      img.alt = filename;
+      card.appendChild(img);
 
         // Buttons row under each image
         const btnRow = document.createElement("div");
