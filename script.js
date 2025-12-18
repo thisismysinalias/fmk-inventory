@@ -175,7 +175,7 @@ function getImageConfiguration(franchise, options = {}) {
     imageList = [];
 
     for (let i = 1; i <= inventoryCount; i++) {
-      imageList.push(`image (${i}).png`);
+      imageList.push(`image (${i}).webp`);
     }
 
   } else {
