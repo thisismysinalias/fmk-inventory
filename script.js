@@ -135,68 +135,58 @@
     });
   }
 
-  function getImageConfiguration(franchise, options = {}) {
-    let imageList = [];
-    let imageFolder = '';
-    let fileExtension = '';
+function getImageConfiguration(franchise, options = {}) {
+  let imageList = [];
+  let imageFolder = '';
 
-    if (franchise === 'rance') {
-      imageFolder = 'rance';
-      fileExtension = '.webp';
-      
-      // Build list for Rance (now 237 images, same as FE)
-      imageList = Array.from({ length: 237 }, (_, i) => `image (${i + 1})${fileExtension}`);
-      
-      // Apply filters based on options
-      if (!options.includeRanceX) {
-        // Remove Rance X characters (same skip numbers as before)
-        const ranceXSkipNumbers = [
-          4, 5, 15,  
-          24, 35, 38,
-          44, 46, 51,
-          56, 62, 67,
-          70, 73, 87,
-          91, 95, 98,
-          100, 105, 107,
-          110, 118, 20,
-          119, 120, 126,
-          127, 132, 134,
-          135, 136, 140,
-          141, 87, 19,
-          146, 147, 149,
-          150, 151, 152,
-          153, 155, 157,
-          164, 11, 109
-        ];
-        
-        const skipSet = new Set(ranceXSkipNumbers);
-        imageList = imageList.filter(name => {
-          const match = name.match(/image \((\d+)\)\.webp/);
-          if (!match) return true;
-          const num = parseInt(match[1], 10);
-          return !skipSet.has(num);
-        });
-      }
-      
-      if (!options.includeOldSprites) {
-        // Exclude images 165-237 (old games without H sprites)
-        imageList = imageList.filter(name => {
-          const match = name.match(/image \((\d+)\)\.webp/);
-          if (!match) return true;
-          const num = parseInt(match[1], 10);
-          return num < 165; // Keep only images 1-164
-        });
-      }
-    } else {
-      // Fire Emblem franchise
-      imageFolder = 'fe';
-      fileExtension = '.webp';
-      
-      // Build list for FE (237 images)
-      imageList = Array.from({ length: 237 }, (_, i) => `image (${i + 1})${fileExtension}`);
+  if (franchise === 'rance') {
+    imageFolder = 'rance';
+    const fileExtension = '.webp';
+
+    imageList = Array.from({ length: 237 }, (_, i) => `image (${i + 1})${fileExtension}`);
+
+    if (!options.includeRanceX) {
+      const ranceXSkipNumbers = [
+        4, 5, 15, 24, 35, 38, 44, 46, 51, 56, 62, 67,
+        70, 73, 87, 91, 95, 98, 100, 105, 107, 110,
+        118, 20, 119, 120, 126, 127, 132, 134, 135,
+        136, 140, 141, 19, 146, 147, 149, 150, 151,
+        152, 153, 155, 157, 164, 11, 109
+      ];
+
+      const skipSet = new Set(ranceXSkipNumbers);
+      imageList = imageList.filter(name => {
+        const match = name.match(/image \((\d+)\)\.webp/);
+        return !match || !skipSet.has(parseInt(match[1], 10));
+      });
     }
 
-    return { imageList, imageFolder };
+    if (!options.includeOldSprites) {
+      imageList = imageList.filter(name => {
+        const match = name.match(/image \((\d+)\)\.webp/);
+        return !match || parseInt(match[1], 10) < 165;
+      });
+    }
+
+  } else if (franchise === 'inventory') {
+    imageFolder = 'inventory';
+
+    const inventoryCount = 3; // adjust if needed
+    imageList = [];
+
+    for (let i = 1; i <= inventoryCount; i++) {
+      imageList.push(`image (${i}).png`);
+    }
+
+  } else {
+    // Fire Emblem
+    imageFolder = 'fe';
+    const fileExtension = '.webp';
+
+    imageList = Array.from({ length: 237 }, (_, i) => `image (${i + 1})${fileExtension}`);
+  }
+
+  return { imageList, imageFolder };
   }
 
   // ─────────────────────────────────────────────────────────────────────────
