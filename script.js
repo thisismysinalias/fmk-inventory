@@ -171,7 +171,7 @@ function getImageConfiguration(franchise, options = {}) {
   } else if (franchise === 'inventory') {
     imageFolder = 'inventory';
 
-    const inventoryCount = 3; // adjust if needed
+    const inventoryCount = 14; // adjust if needed
     imageList = [];
 
     for (let i = 1; i <= inventoryCount; i++) {
