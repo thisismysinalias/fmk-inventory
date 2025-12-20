@@ -870,7 +870,7 @@ downloadButton.addEventListener("click", async () => {
     canvas.toBlob(blob => {
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `results_${Date.now()}.jpg`;
+      link.download = `results1_${Date.now()}.jpg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
