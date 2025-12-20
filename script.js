@@ -859,7 +859,7 @@ downloadButton.addEventListener("click", async () => {
   }));
 
   html2canvas(resultsContainer, {
-    scale: 2,
+    scale: 4,
     backgroundColor: null,      // <-- Do NOT force black fill
     useCORS: true,
     allowTaint: true,           // <-- allows WebP + mixed-origin edge cases
