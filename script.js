@@ -423,7 +423,6 @@ function getImageConfiguration(franchise, options = {}) {
 "Sabimaru (Caliber).webp",
 "Saero Rhinum (Nero).webp",
 "Sakura (Joe).webp",
-"Sam (Alias).webp",
 "Samael (Joe).webp",
 "Sandy (Joe).webp",
 "Sato (Joe).webp",
