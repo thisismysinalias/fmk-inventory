@@ -848,53 +848,38 @@ function getImageConfiguration(franchise, options = {}) {
     // ─────────────────────────────────────────────────────────────────────
     // HANDLE "Download Results" BUTTON
     // ─────────────────────────────────────────────────────────────────────
-    downloadButton.addEventListener("click", () => {
-      // Hide the download button temporarily to exclude it from screenshot
-      downloadButton.style.display = "none";
-      
-      // Use html2canvas to render the resultsContainer into a canvas, then download as optimized image.
-      html2canvas(resultsContainer, { 
-        scale: 2,
-        backgroundColor: "#000000",
-        useCORS: true,
-        allowTaint: false
-      }).then(canvas => {
-        // Show the download button again
-        downloadButton.style.display = "block";
-        
-        // Smart compression to stay under 4MB
-        const maxFileSize = 4 * 1024 * 1024; // 4MB
-        let quality = 0.92; // Start with high quality
-        
-        const compressAndDownload = () => {
-          canvas.toBlob(blob => {
-            if (blob.size > maxFileSize && quality > 0.3) {
-              // File too large, reduce quality and try again
-              quality -= 0.08;
-              compressAndDownload();
-            } else {
-              // File size acceptable or we've reached minimum quality
-              const link = document.createElement("a");
-              link.href = URL.createObjectURL(blob);
-              link.download = `results_${quality < 0.9 ? 'compressed_' : ''}${Date.now()}.jpg`;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              
-              // Log final file size for debugging
-              console.log(`Downloaded image: ${(blob.size / 1024 / 1024).toFixed(2)}MB at ${Math.round(quality * 100)}% quality`);
-            }
-          }, "image/jpeg", quality);
-        };
-        
-        compressAndDownload();
-        
-      }).catch(error => {
-        // Make sure to show the button again even if there's an error
-        downloadButton.style.display = "block";
-        console.error("Error generating screenshot:", error);
-      });
-    });
+downloadButton.addEventListener("click", async () => {
+  downloadButton.style.display = "none";
+
+  // Wait for images just in case
+  const images = resultsContainer.querySelectorAll("img");
+  await Promise.all(Array.from(images).map(img => {
+    if (img.complete) return Promise.resolve();
+    return new Promise(resolve => img.onload = img.onerror = resolve);
+  }));
+
+  html2canvas(resultsContainer, {
+    scale: 2,
+    backgroundColor: null,      // <-- Do NOT force black fill
+    useCORS: true,
+    allowTaint: true,           // <-- allows WebP + mixed-origin edge cases
+    imageTimeout: 0
+  }).then(canvas => {
+    downloadButton.style.display = "block";
+
+    canvas.toBlob(blob => {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `results_${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }, "image/jpeg", 0.92);
+  }).catch(err => {
+    console.error("html2canvas failed:", err);
+    downloadButton.style.display = "block";
+  });
+});
 
     // ─────────────────────────────────────────────────────────────────────
     // UTILITY: Fisher–Yates shuffle in place
